@@ -6,6 +6,7 @@ from pybehome import api
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class PyBeHome:
     def __init__(self, username, password):
         self._username = username

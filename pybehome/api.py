@@ -1,4 +1,3 @@
-"""Implements known WeBeHome API calls."""
 import base64
 import json
 import logging
@@ -6,7 +5,7 @@ import time
 
 import requests
 
-from pybehome.utils.constants import WEBEHOME_BASE_URL, \
+from pybehome.constants import WEBEHOME_BASE_URL, \
     WEBEHOME_DEFAULT_JWT_TOKEN, WEBEHOME_VERSION, WEBEHOME_APPTYPE, \
     WEBEHOME_APP, WEBEHOME_DEVICE_NAME
 
