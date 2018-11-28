@@ -49,7 +49,7 @@ class PyBeHome:
         return self.devices.get(device_id)
 
     def get_devices(self):
-        return self.devices
+        return self.devices.values()
 
     def update_location(self):
         _LOGGER.debug("Getting location data from OPEN API.")
