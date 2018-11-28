@@ -15,6 +15,9 @@ class PyBeHome:
         self._token = None
         self.session = None
 
+        self.devices = {}
+        self.location = None
+
     def login(self) -> bool:
         if self.get_auth_token():
             return True
@@ -23,7 +26,7 @@ class PyBeHome:
         return False
 
     def get_auth_token(self):
-        _LOGGER.debug("Getting auth token.")
+        _LOGGER.debug("Getting auth token from OPEN API.")
         try:
             self._token = api.request_token(self._username, self._password)
             return True
@@ -31,19 +34,33 @@ class PyBeHome:
             _LOGGER.warning(error)
             return False
 
-    def get_devices(self):
-        _LOGGER.debug("Getting devices.")
+    def update_devices(self):
+        _LOGGER.debug("Getting device data from OPEN API.")
         try:
-            return api.request_devices(self._token)
+            device_list = list(filter(lambda item: 'SubUnitID' in item,
+                                  api.request_devices(self._token)))
+            for device_data in device_list:
+                device = Device(device_data)
+                self.devices[device.device_id] = device
+        except HTTPError as error:
+            _LOGGER.warning(error)
+
+    def get_device(self, device_id):
+        return self.devices.get(device_id)
+
+    def get_devices(self):
+        return self.devices
+
+    def update_location(self):
+        _LOGGER.debug("Getting location data from OPEN API.")
+        try:
+            location_data = api.request_location(self._token)
+            self.location = Location(location_data)
         except HTTPError as error:
             _LOGGER.warning(error)
 
     def get_location(self):
-        _LOGGER.debug("Getting location.")
-        try:
-            return api.request_location(self._token)
-        except HTTPError as error:
-            _LOGGER.warning(error)
+        return self.location
 
     def set_arm_state(self, arm_state: str):
         _LOGGER.debug("Setting arm state to %s.", arm_state)
@@ -58,3 +75,73 @@ class PyBeHome:
             return api.request_token_destroy(self._token)
         except HTTPError as error:
             _LOGGER.warning(error)
+
+
+class Device(object):
+    def __init__(self, device):
+        self._device = device
+
+    @property
+    def device(self):
+        return self._device
+
+    @property
+    def device_id(self):
+        return self.device.get('SubUnitUniqueID')
+
+    @property
+    def name(self):
+        return self.device.get('Descr')
+
+    @property
+    def type(self):
+        return self.device.get('SubUnitTypeDescr')
+
+    @property
+    def display_type(self):
+        return int(self.device.get('DisplayType'))
+
+    @property
+    def battery_level(self):
+        return int(self.device.get('BatteryLevel'))
+
+    @property
+    def operation_status(self):
+        return int(self.device.get('OperationStatus'))
+
+    @property
+    def last_event_time(self):
+        return self.device.get('ReadingUpdated')
+
+    @property
+    def last_event_data(self):
+        return self.device.get('LastDataEvent')
+
+    @property
+    def lost_connection(self):
+        return bool(self.device.get('LostConnection'))
+
+
+class Location(object):
+    def __init__(self, location):
+        self._location = location
+
+    @property
+    def location(self):
+        return self._location
+
+    @property
+    def base_unit_id(self):
+        return self.location.get('BaseUnitID')
+
+    @property
+    def name(self):
+        return self.location.get('Descr')
+
+    @property
+    def operation_status(self):
+        return self.location.get('OperationStatus')
+
+    @property
+    def operation_status_info(self):
+        return self.location.get('OperationStatusInfo')

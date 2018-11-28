@@ -50,8 +50,10 @@ def main():
     pybehome.login()
 
     if args.command == COMMAND_LOCATION:
+        pybehome.update_location()
         print(pybehome.get_location())
     if args.command == COMMAND_DEVICES:
+        pybehome.update_devices()
         print(pybehome.get_devices())
     if args.command == COMMAND_SET_ARM_STATE:
         print(pybehome.set_arm_state(args.new_status))
