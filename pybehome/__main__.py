@@ -79,7 +79,7 @@ def main():
         for device in pybehome.get_devices():
             print(device)
     if args.command == COMMAND_ARM:
-        print(pybehome.set_arm_state(args.level))
+        print(pybehome.set_alarm_state(args.level))
 
     pybehome.token_destroy()
 

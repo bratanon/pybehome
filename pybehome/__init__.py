@@ -63,7 +63,7 @@ class PyBeHome:
     def get_location(self):
         return self.location
 
-    def set_arm_state(self, arm_state: str):
+    def set_alarm_state(self, arm_state: str):
         _LOGGER.debug("Setting arm state to %s.", arm_state)
         try:
             return api.request_set_arm_state(self._token, arm_state)
