@@ -2,49 +2,71 @@ import argparse
 import logging
 
 from pybehome import PyBeHome
+from pybehome.constants import (ARM_HOME, ARM_AWAY, DISARM)
 
-logging.basicConfig(level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
 
 COMMAND_LOCATION = 'location'
 COMMAND_DEVICES = 'devices'
-COMMAND_SET_ARM_STATE = 'set_arm_state'
+COMMAND_ARM = 'arm'
 
 
 def main():
     """Start PyBeHome command line."""
-    parser = argparse.ArgumentParser(
-        description='Read or change status of WeBeHome devices')
+    parser = argparse.ArgumentParser('PyBeHome: Command Line Utility')
     parser.add_argument(
-        'username',
-        help='Username')
+        '-u', '--username',
+        help='Username', required=True)
     parser.add_argument(
-        'password',
-        help='Password')
+        '-p', '--password',
+        help='Password', required=True)
+    parser.add_argument(
+        '-l', '--location',
+        help='Location id')
 
     commandsparser = parser.add_subparsers(
         help='commands',
         dest='command')
+
     commandsparser.add_parser(
         COMMAND_LOCATION,
-        help='Get information about the active location')
+        help='Get location data')
     commandsparser.add_parser(
         COMMAND_DEVICES,
-        help='Get all devices')
+        help='Get all device data')
 
-    # Set alarm
     set_alarm = commandsparser.add_parser(
-        COMMAND_SET_ARM_STATE,
-        help='set alarm status')
+        COMMAND_ARM,
+        help='Set alarm level')
+
     set_alarm.add_argument(
-        'new_status',
+        'level',
         choices=[
-            'ArmHome',
-            'ArmAway',
-            'Disarm'],
-        help='new status')
+            ARM_HOME,
+            ARM_AWAY,
+            DISARM],
+        help='Alarm level')
+
+    parser.add_argument(
+        '--debug',
+        help='Enable debug logging',
+        required=False, default=False, action="store_true")
+
+    parser.add_argument(
+        '--quiet',
+        help='Output only warnings and errors',
+        required=False, default=False, action="store_true")
 
     args = parser.parse_args()
+
+    if args.debug:
+        log_level = logging.DEBUG
+    elif args.quiet:
+        log_level = logging.WARN
+    else:
+        log_level = logging.INFO
+
+    logging.basicConfig(level=log_level)
 
     pybehome = PyBeHome(args.username, args.password)
     pybehome.login()
@@ -54,9 +76,10 @@ def main():
         print(pybehome.get_location())
     if args.command == COMMAND_DEVICES:
         pybehome.update_devices()
-        print(pybehome.get_devices())
-    if args.command == COMMAND_SET_ARM_STATE:
-        print(pybehome.set_arm_state(args.new_status))
+        for device in pybehome.get_devices():
+            print(device)
+    if args.command == COMMAND_ARM:
+        print(pybehome.set_arm_state(args.level))
 
     pybehome.token_destroy()
 

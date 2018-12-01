@@ -1,6 +1,6 @@
 import logging
 
-from requests import HTTPError
+from requests import RequestException
 
 from pybehome import api
 
@@ -30,7 +30,7 @@ class PyBeHome:
         try:
             self._token = api.request_token(self._username, self._password)
             return True
-        except HTTPError as error:
+        except RequestException as error:
             _LOGGER.warning(error)
             return False
 
@@ -42,7 +42,7 @@ class PyBeHome:
             for device_data in device_list:
                 device = Device(device_data)
                 self.devices[device.device_id] = device
-        except HTTPError as error:
+        except RequestException as error:
             _LOGGER.warning(error)
 
     def get_device(self, device_id):
@@ -55,8 +55,9 @@ class PyBeHome:
         _LOGGER.debug("Getting location data from OPEN API.")
         try:
             location_data = api.request_location(self._token)
+            del location_data['Tabs']
             self.location = Location(location_data)
-        except HTTPError as error:
+        except RequestException as error:
             _LOGGER.warning(error)
 
     def get_location(self):
@@ -66,14 +67,14 @@ class PyBeHome:
         _LOGGER.debug("Setting arm state to %s.", arm_state)
         try:
             return api.request_set_arm_state(self._token, arm_state)
-        except HTTPError as error:
+        except RequestException as error:
             _LOGGER.warning(error)
 
     def token_destroy(self):
         _LOGGER.debug("Destroying token.")
         try:
             return api.request_token_destroy(self._token)
-        except HTTPError as error:
+        except RequestException as error:
             _LOGGER.warning(error)
 
 
@@ -121,6 +122,9 @@ class Device(object):
     def lost_connection(self):
         return bool(self.device.get('LostConnection'))
 
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
 
 class Location(object):
     def __init__(self, location):
@@ -145,3 +149,6 @@ class Location(object):
     @property
     def operation_status_info(self):
         return self.location.get('OperationStatusInfo')
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)

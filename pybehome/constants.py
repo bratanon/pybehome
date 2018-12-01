@@ -1,14 +1,26 @@
 PROJECT_NAME = 'PyBeHome'
 
 # BASE_URL = 'https://webehome.com/API/OpenAPIservice.svc'
-WEBEHOME_BASE_URL = 'https://beta01.webehome.com/API/OpenAPIservice.svc'
-WEBEHOME_DEFAULT_JWT_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9' \
+BASE_URL = 'https://beta01.webehome.com/API/OpenAPIservice.svc'
+DEFAULT_JWT_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9' \
                              '.eyJpc3MiOiJXQkgiLCJpYXQiOjE0MzkyNDA' \
                              '2NDMsImNsdXN0ZXJpZCI6MCwianRpIjowLCJ' \
                              '1aWQiOjAsInV0eXBlIjoiUyIsImFwcCI6OSw' \
                              'iYXBwdHlwZSI6OSwidmVyIjoxMH0.qNe7ztF' \
                              'I3dhuQjJtOughEaxZHTW2kgwe6QpqworSK6s '
-WEBEHOME_APPTYPE = 1
-WEBEHOME_APP = 9
-WEBEHOME_DEVICE_NAME = 'PyBeHome'
-WEBEHOME_VERSION = 400
+APP = 9
+APPTYPE = 1
+APP_VERSION = 400
+
+DEVICE_NAME = 'PyBeHome'
+
+
+ARM_HOME = 'ArmHome'
+ARM_AWAY = 'ArmAway'
+DISARM = 'Disarm'
+
+DOOR_WINDOW_OPEN = 64
+DOOR_WINDOW_CLOSED = 72
+
+MOTION_DETECTED = 88
+MOTION_CLEAR = 89
