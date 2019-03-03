@@ -1,7 +1,7 @@
 PROJECT_NAME = 'PyBeHome'
 
-# BASE_URL = 'https://webehome.com/API/OpenAPIservice.svc'
-BASE_URL = 'https://beta01.webehome.com/API/OpenAPIservice.svc'
+BASE_URL = 'https://webehome.com/API/OpenAPIservice.svc'
+# BASE_URL = 'https://beta01.webehome.com/API/OpenAPIservice.svc'
 DEFAULT_JWT_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9' \
                              '.eyJpc3MiOiJXQkgiLCJpYXQiOjE0MzkyNDA' \
                              '2NDMsImNsdXN0ZXJpZCI6MCwianRpIjowLCJ' \
